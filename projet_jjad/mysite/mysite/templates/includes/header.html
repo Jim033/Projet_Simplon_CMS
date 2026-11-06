@@ -1,0 +1,19 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% if header %}
+<header>
+    <a class="header-logo" href="/">
+        {% if header.logo %}
+            {% image header.logo width-200 alt="" %}
+        {% endif %}
+        {{ header.nom }}
+    </a>
+
+    {% if liens %}
+        <nav aria-label="Navigation principale">
+            {% for lien in liens %}
+                <a href="{% pageurl lien.page %}">{{ lien.titre }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+</header>
+{% endif %}

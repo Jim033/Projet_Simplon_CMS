@@ -1,0 +1,37 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% if footer %}
+<footer>
+    <p class="footer-texte">{{ footer.texte|linebreaksbr }}</p>
+
+    {% if liens %}
+        <nav class="footer-nav" aria-label="Navigation du pied de page">
+            {% for lien in liens %}
+                <a href="{% pageurl lien.page %}">{{ lien.titre }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+
+    {% if reseaux %}
+        <section class="footer-reseaux">
+            <h2>Réseaux sociaux</h2>
+            <div>
+                {% for reseau in reseaux %}
+                    <a href="{{ reseau.url }}">
+                        {% if reseau.logo %}
+                            {% image reseau.logo width-40 alt=reseau.nom %}
+                        {% else %}
+                            {{ reseau.nom }}
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if footer.page_mentions_legales.live %}
+        <div class="footer-mentions">
+            <a href="{% pageurl footer.page_mentions_legales %}">{{ footer.texte_mentions_legales }}</a>
+        </div>
+    {% endif %}
+</footer>
+{% endif %}

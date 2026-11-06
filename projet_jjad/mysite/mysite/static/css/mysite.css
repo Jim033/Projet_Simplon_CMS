@@ -1,0 +1,476 @@
+/* ---------- Polices (hébergées dans le projet) ---------- */
+@font-face {
+    font-family: "Jost";
+    src: url("../fonts/jost-latin-wght-normal.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+/* ---------- Thème : à modifier ici pour changer tout le site ---------- */
+:root {
+    --encre: #1b2420;
+    --gris: #59625d;
+    --trait: #dcd9d2;
+    --beton: #f3f1ec;
+    --blanc: #ffffff;
+    --vert: #27563a;
+    --vert-fonce: #1c4029;
+    --rouge: #c8141f;
+    --sable: #e9dcc3;
+    --police-titre: "Jost", "Century Gothic", Arial, sans-serif;
+    --police-texte: "Inter", Arial, Helvetica, sans-serif;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--police-texte);
+    line-height: 1.7;
+    color: var(--encre);
+    background: var(--blanc);
+}
+
+/* Le footer reste en bas même si la page est courte */
+main {
+    flex: 1;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a:focus-visible {
+    outline: 3px solid var(--vert);
+    outline-offset: 3px;
+}
+
+/* ---------- Lien d'évitement (visible au clavier uniquement) ---------- */
+body > a:first-child {
+    position: absolute;
+    left: -9999px;
+}
+
+body > a:first-child:focus {
+    left: 1rem;
+    top: 1rem;
+    z-index: 10;
+    padding: 0.75rem 1rem;
+    background: var(--blanc);
+    color: var(--encre);
+}
+
+/* ---------- Header ---------- */
+header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--blanc);
+    border-bottom: 1px solid var(--trait);
+}
+
+header a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    color: var(--encre);
+    font-family: var(--police-titre);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* Le logo + nom prend toute la largeur sur mobile */
+.header-logo {
+    width: 100%;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+}
+
+header nav a {
+    position: relative;
+    letter-spacing: 0.04em;
+}
+
+/* Trait rouge du logo qui se dessine au survol */
+header nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.4rem;
+    height: 2px;
+    background: var(--rouge);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+}
+
+header nav a:hover::after,
+header nav a:focus-visible::after {
+    transform: scaleX(1);
+}
+
+header img {
+    max-height: 3rem;
+    width: auto;
+}
+
+/* ---------- Main : règles communes ---------- */
+main section {
+    padding: 2.5rem 1rem;
+}
+
+main h1,
+main h2,
+main h3 {
+    font-family: var(--police-titre);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+main h1 {
+    font-size: 2.25rem;
+    line-height: 1.15;
+    margin: 0 0 1rem;
+}
+
+main h2 {
+    font-size: 1.6rem;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+}
+
+/* Trait de construction sous les titres */
+.page-contenu h1::after,
+.metier h2::after,
+.realisations h2::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin-top: 0.75rem;
+    background: var(--rouge);
+}
+
+main p {
+    margin: 0 0 1rem;
+}
+
+/* Les liens d'action sont des boutons */
+main section a {
+    display: inline-block;
+    justify-self: start;
+    min-height: 44px;
+    padding: 0.7rem 1.5rem;
+    background: var(--vert);
+    color: var(--blanc);
+    font-family: var(--police-titre);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+main section a:hover {
+    background: var(--vert-fonce);
+}
+
+/* ---------- Page de contenu (mentions légales, etc.) ---------- */
+.page-contenu {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 2.5rem 1rem;
+}
+
+.page-contenu h2 {
+    margin-top: 2.5rem;
+}
+
+.page-contenu a {
+    color: var(--vert);
+    text-underline-offset: 0.15em;
+}
+
+.page-contenu a:hover {
+    color: var(--rouge);
+}
+
+/* ---------- Accueil : partie 1, accroche ---------- */
+.accroche {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 70vh;
+    overflow: hidden;
+    color: var(--blanc);
+}
+
+.accroche img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Voile sombre pour que le texte reste lisible */
+.accroche::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 32, 26, 0.6);
+    z-index: 1;
+}
+
+.accroche h1,
+.accroche p {
+    position: relative;
+    z-index: 2;
+    max-width: 40rem;
+}
+
+/* ---------- Accueil : partie 2, le métier ---------- */
+.metier {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.metier img {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+/* ---------- Accueil : partie 3, réalisations ---------- */
+.realisations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    background: var(--beton);
+}
+
+.realisations h2,
+.realisations p,
+.realisations a {
+    grid-column: 1 / -1;
+}
+
+.realisations a {
+    margin-bottom: 0.75rem;
+}
+
+.realisations img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+/* ---------- Footer ---------- */
+footer {
+    display: grid;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+    background: var(--vert);
+    color: var(--blanc);
+    font-size: 0.95rem;
+}
+
+footer p {
+    margin: 0;
+    font-family: var(--police-titre);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+footer h2 {
+    margin: 0;
+    font-family: var(--police-titre);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sable);
+}
+
+.footer-nav,
+.footer-reseaux div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+}
+
+footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--blanc);
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--sable);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+footer a:focus-visible {
+    outline-color: var(--sable);
+}
+
+/* ---------- Animations désactivées si l'utilisateur le demande ---------- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* ---------- Écran large (à partir de 768px) ---------- */
+@media (min-width: 768px) {
+
+    header {
+        padding: 0.75rem 2rem;
+    }
+
+    .header-logo {
+        width: auto;
+        margin-right: auto;
+    }
+
+    main section {
+        padding: 4rem 2rem;
+    }
+
+    .page-contenu {
+        padding: 4rem 2rem;
+    }
+
+    main h1 {
+        font-size: 3.25rem;
+    }
+
+    main h2 {
+        font-size: 2rem;
+    }
+
+    /* Partie 2 : texte à gauche, image à droite */
+    .metier {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr auto auto auto 1fr;
+        column-gap: 3rem;
+        align-items: center;
+    }
+
+    .metier h2,
+    .metier p,
+    .metier a {
+        grid-column: 1;
+    }
+
+    .metier h2 {
+        grid-row: 2;
+    }
+
+    .metier p {
+        grid-row: 3;
+    }
+
+    .metier a {
+        grid-row: 4;
+    }
+
+    .metier img {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        margin-top: 0;
+    }
+
+    /* Partie 3 : texte à gauche, images à droite */
+    .realisations {
+        grid-template-columns: 1.2fr 1fr 1fr 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 1rem;
+        align-content: center;
+    }
+
+    .realisations img {
+        grid-row: 1 / span 3;
+    }
+
+    .realisations h2 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .realisations p {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .realisations a {
+        grid-column: 1;
+        grid-row: 3;
+        align-self: start;
+    }
+
+    /* Footer : texte à gauche, navigation et réseaux au centre, mentions à droite */
+    footer {
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 0.5rem 1.5rem;
+        padding: 1.5rem 2rem;
+    }
+
+    .footer-texte {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    .footer-nav {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: center;
+    }
+
+    .footer-reseaux {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: center;
+    }
+
+    .footer-reseaux div {
+        justify-content: center;
+    }
+
+    .footer-mentions {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        text-align: right;
+    }
+}
