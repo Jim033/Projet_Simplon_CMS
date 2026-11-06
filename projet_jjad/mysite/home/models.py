@@ -3,7 +3,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.fields import RichTextField
 from wagtail.models import Page, Orderable
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.snippets.models import register_snippet
 
 
@@ -118,7 +118,115 @@ class FooterReseau(Orderable):
 
 
 class HomePage(Page):
-    pass
+    accroche_titre = models.CharField(
+        "Titre", max_length=120, default="Vos plans d'architecture en Gironde"
+    )
+    accroche_texte = models.CharField(
+        "Phrase d'accroche",
+        max_length=255,
+        default="Plans, permis de construire et maquettes 2D et 3D "
+        "pour les particuliers et les professionnels.",
+    )
+    accroche_image = models.ForeignKey(
+        "wagtailimages.Image",
+        verbose_name="Image de fond",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    metier_titre = models.CharField("Titre", max_length=120, default="Mon métier")
+    metier_texte = RichTextField(
+        "Texte",
+        features=["bold", "italic", "link"],
+        default="<p>Dessinateur en plans d'architecture, je réalise vos dossiers "
+        "de permis de construire, vos maquettes numériques 2D et 3D, vos rendus "
+        "et visites virtuelles ainsi que les métrés de vos rénovations.</p>",
+    )
+    metier_image = models.ForeignKey(
+        "wagtailimages.Image",
+        verbose_name="Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Pensez à remplir la description de l'image : "
+        "elle est lue par les lecteurs d'écran.",
+    )
+    metier_lien_texte = models.CharField(
+        "Texte du bouton", max_length=50, default="En savoir plus"
+    )
+    metier_lien_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Page du bouton",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    realisations_titre = models.CharField(
+        "Titre", max_length=120, default="Mes réalisations"
+    )
+    realisations_lien_texte = models.CharField(
+        "Texte du bouton", max_length=50, default="Voir toutes les réalisations"
+    )
+    realisations_lien_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Page du bouton",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("accroche_titre"),
+                FieldPanel("accroche_texte"),
+                FieldPanel("accroche_image"),
+            ],
+            heading="Partie 1 : accroche",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("metier_titre"),
+                FieldPanel("metier_texte"),
+                FieldPanel("metier_image"),
+                FieldPanel("metier_lien_texte"),
+                FieldPanel("metier_lien_page"),
+            ],
+            heading="Partie 2 : métier",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("realisations_titre"),
+                InlinePanel("realisations", label="Réalisation", max_num=4),
+                FieldPanel("realisations_lien_texte"),
+                FieldPanel("realisations_lien_page"),
+            ],
+            heading="Partie 3 : réalisations",
+        ),
+    ]
+
+
+class HomeRealisation(Orderable):
+    page = ParentalKey(
+        "HomePage", on_delete=models.CASCADE, related_name="realisations"
+    )
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    description = models.CharField(max_length=100)
+
+    panels = [
+        FieldPanel("image"),
+        FieldPanel("description"),
+    ]
 
 
 class PageContenu(Page):

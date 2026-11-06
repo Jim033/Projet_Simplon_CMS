@@ -1,7 +1,44 @@
 {% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
+<section class="accroche">
+    {% if page.accroche_image %}
+        {% srcset_image page.accroche_image width-{800,1600} format-webp sizes="100vw" alt="" fetchpriority="high" %}
+    {% endif %}
+    <h1>{{ page.accroche_titre }}</h1>
+    <p>{{ page.accroche_texte }}</p>
+</section>
 
+<section class="metier{% if not page.metier_image %} metier-sans-image{% endif %}" aria-labelledby="titre-metier">
+    <h2 id="titre-metier">{{ page.metier_titre }}</h2>
+    <div class="metier-texte">{{ page.metier_texte|richtext }}</div>
+    {% if page.metier_image %}
+        {% srcset_image page.metier_image width-{400,800} format-webp sizes="(min-width: 768px) 40vw, 45vw" loading="lazy" %}
+    {% endif %}
+    {% if page.metier_lien_page.live %}
+        <a class="bouton" href="{% pageurl page.metier_lien_page %}">{{ page.metier_lien_texte }}</a>
+    {% endif %}
+</section>
+
+<section class="realisations" aria-labelledby="titre-realisations">
+    <h2 id="titre-realisations">{{ page.realisations_titre }}</h2>
+    {% if page.realisations.all %}
+        <ul>
+            {% for realisation in page.realisations.all %}
+                <li>
+                    <figure>
+                        {% srcset_image realisation.image fill-{300x300,600x600} format-webp sizes="(min-width: 768px) 20vw, 30vw" loading="lazy" %}
+                        <figcaption>{{ realisation.description }}</figcaption>
+                    </figure>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if page.realisations_lien_page.live %}
+        <a class="bouton" href="{% pageurl page.realisations_lien_page %}">{{ page.realisations_lien_texte }}</a>
+    {% endif %}
+</section>
 {% endblock content %}

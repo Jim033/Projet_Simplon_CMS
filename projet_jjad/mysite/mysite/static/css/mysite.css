@@ -80,7 +80,7 @@ header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.25rem 1.5rem;
+    gap: 0.25rem 0.75rem;
     padding: 0.75rem 1rem;
     background: var(--blanc);
     border-bottom: 1px solid var(--trait);
@@ -97,24 +97,59 @@ header a {
     text-decoration: none;
 }
 
-/* Le logo + nom prend toute la largeur sur mobile */
+/* Sur mobile : logo + nom à gauche, bouton du menu à droite */
 .header-logo {
-    width: 100%;
-    font-size: 1.05rem;
+    flex: 1;
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 header nav {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
     gap: 0.25rem 1.5rem;
 }
 
 header nav a {
     position: relative;
+    align-self: flex-start;
     letter-spacing: 0.04em;
+}
+
+.menu-replie nav {
+    display: none;
+}
+
+/* Bouton du menu burger */
+.menu-bouton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.menu-bouton[hidden] {
+    display: none;
+}
+
+.menu-bouton:focus-visible {
+    outline: 3px solid var(--vert);
+    outline-offset: 3px;
+}
+
+.menu-bouton span {
+    height: 3px;
+    background: var(--encre);
 }
 
 /* Trait rouge du logo qui se dessine au survol */
@@ -137,7 +172,7 @@ header nav a:focus-visible::after {
 }
 
 header img {
-    max-height: 3rem;
+    max-height: 2.25rem;
     width: auto;
 }
 
@@ -183,7 +218,7 @@ main p {
 }
 
 /* Les liens d'action sont des boutons */
-main section a {
+.bouton {
     display: inline-block;
     justify-self: start;
     min-height: 44px;
@@ -197,7 +232,7 @@ main section a {
     transition: background 0.2s ease;
 }
 
-main section a:hover {
+.bouton:hover {
     background: var(--vert-fonce);
 }
 
@@ -226,10 +261,13 @@ main section a:hover {
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    min-height: 70vh;
+    min-height: clamp(16rem, 45vh, 26rem);
     overflow: hidden;
     color: var(--blanc);
+    text-align: center;
+    background: var(--vert-fonce);
 }
 
 .accroche img {
@@ -246,7 +284,7 @@ main section a:hover {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(20, 32, 26, 0.6);
+    background: rgba(20, 32, 26, 0.65);
     z-index: 1;
 }
 
@@ -257,39 +295,56 @@ main section a:hover {
     max-width: 40rem;
 }
 
+.accroche p {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
 /* ---------- Accueil : partie 2, le métier ---------- */
 .metier {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.75rem 1rem;
+}
+
+.metier-texte p:last-child {
+    margin-bottom: 0;
 }
 
 .metier img {
-    margin-top: 1rem;
     width: 100%;
 }
 
 /* ---------- Accueil : partie 3, réalisations ---------- */
 .realisations {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    gap: 1.5rem;
     background: var(--beton);
 }
 
-.realisations h2,
-.realisations p,
-.realisations a {
-    grid-column: 1 / -1;
+.realisations ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.realisations a {
-    margin-bottom: 0.75rem;
+.realisations figure {
+    margin: 0;
 }
 
 .realisations img {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+}
+
+.realisations figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-align: center;
 }
 
 /* ---------- Footer ---------- */
@@ -352,6 +407,24 @@ footer a:focus-visible {
     }
 }
 
+/* ---------- Téléphone standard (à partir de 350px) ---------- */
+@media (min-width: 350px) {
+
+    /* Partie 2 : texte à gauche, image à droite, bouton dessous */
+    .metier {
+        grid-template-columns: 1.2fr 1fr;
+    }
+
+    .metier h2,
+    .metier .bouton {
+        grid-column: 1 / -1;
+    }
+
+    .metier-sans-image {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ---------- Écran large (à partir de 768px) ---------- */
 @media (min-width: 768px) {
 
@@ -359,9 +432,31 @@ footer a:focus-visible {
         padding: 0.75rem 2rem;
     }
 
+    header {
+        column-gap: 1.5rem;
+    }
+
     .header-logo {
-        width: auto;
+        flex: none;
         margin-right: auto;
+        font-size: 1.05rem;
+        letter-spacing: 0.08em;
+    }
+
+    header img {
+        max-height: 3rem;
+    }
+
+    .menu-bouton {
+        display: none;
+    }
+
+    header nav,
+    .menu-replie nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: auto;
     }
 
     main section {
@@ -380,17 +475,22 @@ footer a:focus-visible {
         font-size: 2rem;
     }
 
-    /* Partie 2 : texte à gauche, image à droite */
+    .accroche p {
+        font-size: 1.25rem;
+    }
+
+    /* Partie 2 : texte centré à gauche, image à droite */
     .metier {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.5fr 1fr;
         grid-template-rows: 1fr auto auto auto 1fr;
         column-gap: 3rem;
         align-items: center;
+        text-align: center;
     }
 
     .metier h2,
-    .metier p,
-    .metier a {
+    .metier-texte,
+    .metier .bouton {
         grid-column: 1;
     }
 
@@ -398,30 +498,35 @@ footer a:focus-visible {
         grid-row: 2;
     }
 
-    .metier p {
+    .metier h2::after {
+        margin-inline: auto;
+    }
+
+    .metier-texte {
         grid-row: 3;
     }
 
-    .metier a {
+    .metier .bouton {
         grid-row: 4;
+        justify-self: center;
+        margin-top: 0.5rem;
     }
 
     .metier img {
         grid-column: 2;
         grid-row: 1 / -1;
-        margin-top: 0;
     }
 
-    /* Partie 3 : texte à gauche, images à droite */
+    .metier-sans-image {
+        grid-template-columns: minmax(0, 48rem);
+        justify-content: center;
+    }
+
+    /* Partie 3 : titre et bouton à gauche, images à droite */
     .realisations {
-        grid-template-columns: 1.2fr 1fr 1fr 1fr;
-        grid-template-rows: auto auto 1fr;
-        gap: 1rem;
-        align-content: center;
-    }
-
-    .realisations img {
-        grid-row: 1 / span 3;
+        grid-template-columns: 1fr 2.5fr;
+        grid-template-rows: auto 1fr;
+        gap: 1rem 3rem;
     }
 
     .realisations h2 {
@@ -429,15 +534,24 @@ footer a:focus-visible {
         grid-row: 1;
     }
 
-    .realisations p {
+    .realisations .bouton {
         grid-column: 1;
         grid-row: 2;
+        align-self: start;
+        justify-self: start;
     }
 
-    .realisations a {
-        grid-column: 1;
-        grid-row: 3;
-        align-self: start;
+    .realisations ul {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    .realisations figcaption {
+        text-align: left;
     }
 
     /* Footer : texte à gauche, navigation et réseaux au centre, mentions à droite */

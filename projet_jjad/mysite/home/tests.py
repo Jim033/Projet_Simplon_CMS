@@ -1,5 +1,21 @@
-from home.models import Footer, FooterLien, FooterReseau, Header, HeaderLien, HomePage, PageContenu
+import shutil
+import tempfile
 
+from django.test import override_settings
+
+from home.models import (
+    Footer,
+    FooterLien,
+    FooterReseau,
+    Header,
+    HeaderLien,
+    HomePage,
+    HomeRealisation,
+    PageContenu,
+)
+
+from wagtail.images import get_image_model
+from wagtail.images.tests.utils import get_test_image_file
 from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
@@ -88,3 +104,55 @@ class HeaderFooterTests(WagtailPageTestCase):
         response = self.client.get(self.homepage.url)
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "<footer>")
+
+
+class HomeContentTests(WagtailPageTestCase):
+    """
+    Tests for the content of the homepage, editable from Wagtail.
+    """
+
+    def setUp(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        media_settings = override_settings(MEDIA_ROOT=media_root)
+        media_settings.enable()
+        self.addCleanup(media_settings.disable)
+
+        root_page = Page.get_first_root_node()
+        self.homepage = HomePage(title="Home")
+        root_page.add_child(instance=self.homepage)
+        Site.objects.all().delete()
+        Site.objects.create(hostname="localhost", root_page=self.homepage, is_default_site=True)
+        self.methode = PageContenu(title="Methode", slug="methode")
+        self.homepage.add_child(instance=self.methode)
+        self.image = get_image_model().objects.create(
+            title="photo.png", file=get_test_image_file(), description="Maison en bois"
+        )
+
+    def test_empty_homepage_has_no_broken_parts(self):
+        response = self.client.get(self.homepage.url)
+        self.assertContains(response, "<h1>Vos plans d&#x27;architecture en Gironde</h1>", html=True)
+        self.assertContains(response, "metier-sans-image")
+        self.assertNotContains(response, 'class="bouton"')
+        self.assertNotContains(response, "<ul>")
+
+    def test_filled_homepage(self):
+        self.homepage.accroche_image = self.image
+        self.homepage.metier_image = self.image
+        self.homepage.metier_lien_page = self.methode
+        self.homepage.realisations_lien_page = self.methode
+        self.homepage.save()
+        HomeRealisation.objects.create(page=self.homepage, image=self.image, description="Extension bois")
+
+        response = self.client.get(self.homepage.url)
+        self.assertContains(response, 'alt=""', count=1)
+        self.assertContains(response, 'alt="Maison en bois"', count=2)
+        self.assertContains(response, "srcset=", count=3)
+        self.assertContains(response, "<figcaption>Extension bois</figcaption>")
+        self.assertContains(response, 'href="/methode/"', count=2)
+
+    def test_button_hidden_when_page_is_unpublished(self):
+        self.homepage.metier_lien_page = self.methode
+        self.homepage.save()
+        self.methode.unpublish()
+        self.assertNotContains(self.client.get(self.homepage.url), 'class="bouton"')

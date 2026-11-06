@@ -9,7 +9,13 @@
     </a>
 
     {% if liens %}
-        <nav aria-label="Navigation principale">
+        <button class="menu-bouton" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu-principal" hidden>
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav id="menu-principal" aria-label="Navigation principale">
             {% for lien in liens %}
                 <a href="{% pageurl lien.page %}">{{ lien.titre }}</a>
             {% endfor %}
