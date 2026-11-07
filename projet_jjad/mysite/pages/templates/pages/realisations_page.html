@@ -1,0 +1,36 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-realisations{% endblock %}
+
+{% block content %}
+<section class="liste-projets" aria-labelledby="titre-page">
+    <h1 id="titre-page">{{ page.title }}</h1>
+    {% if page.introduction %}
+        <div class="liste-projets-intro">{{ page.introduction|richtext }}</div>
+    {% endif %}
+
+    {% if projets %}
+        <ul>
+            {% for projet in projets %}
+                <li class="projet-carte">
+                    {% with vignette=projet.vignette %}
+                        {% if vignette %}
+                            {% image vignette fill-600x600 format-webp loading="lazy" %}
+                        {% endif %}
+                    {% endwith %}
+                    <div>
+                        <h2>{{ projet.title }}</h2>
+                        {% if projet.infos %}<p>{{ projet.infos }}</p>{% endif %}
+                        <a class="bouton" href="{% pageurl projet %}">
+                            {{ page.lien_texte }}<span class="visuellement-cache"> : {{ projet.title }}</span>
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune réalisation pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-realisation{% endblock %}
+
+{% block content %}
+<article class="projet">
+    <a class="projet-retour" href="{% pageurl page.get_parent %}">
+        <span aria-hidden="true">←</span> Retour aux réalisations
+    </a>
+    <h1>{{ page.title }}</h1>
+    {% if page.infos %}<p class="projet-infos">{{ page.infos }}</p>{% endif %}
+
+    {% if page.images.all %}
+        <ul class="projet-images">
+            {% for item in page.images.all %}
+                <li>
+                    {% srcset_image item.image width-{600,1200} format-webp sizes="(min-width: 768px) 45vw, 100vw" loading="lazy" %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if page.texte %}
+        <div class="projet-texte">{{ page.texte|richtext }}</div>
+    {% endif %}
+</article>
+{% endblock content %}

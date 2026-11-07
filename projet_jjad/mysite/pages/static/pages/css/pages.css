@@ -1,0 +1,160 @@
+/* Styles propres aux pages de l'app "pages".
+   Les couleurs et polices viennent des variables de mysite.css (--encre, --vert, --rouge...). */
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran */
+.visuellement-cache {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Trait de construction sous les titres */
+.liste-projets h1::after,
+.projet h1::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin: 0.75rem auto 0;
+    background: var(--rouge);
+}
+
+/* ---------- Mes réalisations : liste des projets ---------- */
+.liste-projets {
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+.liste-projets h1,
+.liste-projets-intro {
+    text-align: center;
+}
+
+.liste-projets-intro {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.liste-projets ul {
+    display: grid;
+    gap: 2.5rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Mobile : image au-dessus, texte dessous */
+.projet-carte {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 22rem;
+    margin: 0 auto;
+}
+
+.projet-carte img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.projet-carte h2 {
+    font-size: 1.3rem;
+    margin: 0 0 0.25rem;
+}
+
+.projet-carte p {
+    margin: 0 0 0.75rem;
+    color: var(--gris);
+}
+
+/* ---------- Une réalisation : page détail ---------- */
+.projet {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 2.5rem 1rem;
+}
+
+.projet h1,
+.projet-infos {
+    text-align: center;
+}
+
+.projet-infos {
+    color: var(--gris);
+}
+
+.projet-retour {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    margin-bottom: 1rem;
+    color: var(--vert);
+    font-family: var(--police-titre);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.projet-retour:hover {
+    color: var(--rouge);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.projet-images {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+}
+
+.projet-images img {
+    width: 100%;
+}
+
+.projet-texte {
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.projet-texte a {
+    color: var(--vert);
+    text-underline-offset: 0.15em;
+}
+
+.projet-texte a:hover {
+    color: var(--rouge);
+}
+
+/* ---------- Écran large (à partir de 768px) ---------- */
+@media (min-width: 768px) {
+
+    /* Projets sur 2 colonnes, image et texte côte à côte */
+    .liste-projets ul {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem 2.5rem;
+    }
+
+    .projet-carte {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 1.25rem;
+        max-width: none;
+        margin: 0;
+    }
+
+    /* Une ligne sur deux : texte à gauche, image à droite (comme la maquette) */
+    .projet-carte:nth-child(4n + 3) img,
+    .projet-carte:nth-child(4n + 4) img {
+        order: 2;
+    }
+
+    .projet-images {
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        gap: 2.5rem;
+    }
+}

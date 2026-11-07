@@ -312,6 +312,9 @@ main p {
 
 .metier img {
     width: 100%;
+    /* Fond papier de l'illustration fondu dans le blanc de la page */
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at center, #000 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 70% at center, #000 55%, transparent 100%);
 }
 
 /* ---------- Accueil : partie 3, réalisations ---------- */

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# Template commun aux pages de l'app : charge la feuille de style des pages. #}
+{# Chaque template de page fait {% extends "pages/base_page.html" %} #}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'pages/css/pages.css' %}">
+{% endblock %}
