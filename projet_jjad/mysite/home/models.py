@@ -170,15 +170,17 @@ class HomePage(Page):
         "Titre", max_length=120, default="Mes réalisations"
     )
     realisations_lien_texte = models.CharField(
-        "Texte du bouton", max_length=50, default="Voir toutes les réalisations"
+        "Texte du lien", max_length=50, default="Voir toutes mes réalisations"
     )
     realisations_lien_page = models.ForeignKey(
         "wagtailcore.Page",
-        verbose_name="Page du bouton",
+        verbose_name="Page du lien",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
+        help_text="Laisser vide pour pointer automatiquement "
+        "vers la page des réalisations.",
     )
 
     content_panels = Page.content_panels + [
@@ -210,6 +212,16 @@ class HomePage(Page):
             heading="Partie 3 : réalisations",
         ),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        from pages.models import RealisationsPage
+
+        context = super().get_context(request, *args, **kwargs)
+        lien = self.realisations_lien_page
+        if not (lien and lien.live):
+            lien = RealisationsPage.objects.live().first()
+        context["lien_realisations"] = lien
+        return context
 
 
 class HomeRealisation(Orderable):

@@ -333,6 +333,31 @@ main p {
     list-style: none;
 }
 
+.realisations-lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    justify-self: start;
+    min-height: 44px;
+    font-family: var(--police-titre);
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+/* Même couleur que le lien soit déjà visité ou non (pas de violet) */
+.realisations-lien,
+.realisations-lien:visited {
+    color: var(--vert);
+}
+
+.realisations-lien:hover,
+.realisations-lien:focus-visible {
+    color: var(--rouge);
+}
+
 .realisations figure {
     margin: 0;
 }
@@ -525,7 +550,7 @@ footer a:focus-visible {
         justify-content: center;
     }
 
-    /* Partie 3 : titre et bouton à gauche, images à droite */
+    /* Partie 3 : titre et lien à gauche, images à droite */
     .realisations {
         grid-template-columns: 1fr 2.5fr;
         grid-template-rows: auto 1fr;
@@ -537,7 +562,7 @@ footer a:focus-visible {
         grid-row: 1;
     }
 
-    .realisations .bouton {
+    .realisations-lien {
         grid-column: 1;
         grid-row: 2;
         align-self: start;

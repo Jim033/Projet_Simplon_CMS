@@ -25,6 +25,9 @@
 
 <section class="realisations" aria-labelledby="titre-realisations">
     <h2 id="titre-realisations">{{ page.realisations_titre }}</h2>
+    {% if lien_realisations %}
+        <a class="realisations-lien" href="{% pageurl lien_realisations %}">{{ page.realisations_lien_texte }} <span aria-hidden="true">→</span></a>
+    {% endif %}
     {% if page.realisations.all %}
         <ul>
             {% for realisation in page.realisations.all %}
@@ -36,9 +39,6 @@
                 </li>
             {% endfor %}
         </ul>
-    {% endif %}
-    {% if page.realisations_lien_page.live %}
-        <a class="bouton" href="{% pageurl page.realisations_lien_page %}">{{ page.realisations_lien_texte }}</a>
     {% endif %}
 </section>
 {% endblock content %}
