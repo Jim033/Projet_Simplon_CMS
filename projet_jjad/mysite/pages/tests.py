@@ -2,7 +2,15 @@ from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
 from home.models import HomePage
-from pages.models import Tarif, TarifElement, TarifsPage, TarifsPageTarif
+from pages.models import (
+    Etape,
+    MethodePage,
+    MethodePageEtape,
+    Tarif,
+    TarifElement,
+    TarifsPage,
+    TarifsPageTarif,
+)
 
 
 class TarifsPageTests(WagtailPageTestCase):
@@ -52,3 +60,52 @@ class TarifsPageTests(WagtailPageTestCase):
     def test_sans_tarif(self):
         TarifsPageTarif.objects.all().delete()
         self.assertContains(self.client.get(self.page.url), "Aucun tarif pour le moment.")
+
+
+class MethodePageTests(WagtailPageTestCase):
+    """Tests de la page « Méthode » et des snippets Étape."""
+
+    def setUp(self):
+        root_page = Page.get_first_root_node()
+        self.homepage = HomePage(title="Home")
+        root_page.add_child(instance=self.homepage)
+        Site.objects.all().delete()
+        Site.objects.create(hostname="localhost", root_page=self.homepage, is_default_site=True)
+
+        self.page = MethodePage(
+            title="Ma méthode",
+            slug="methode",
+            complement_titre="Les mairies et délais d'attente",
+            complement_texte="<p>Comptez deux mois d'instruction.</p>",
+        )
+        self.homepage.add_child(instance=self.page)
+
+        premiere = Etape.objects.create(titre="Rencontre", texte="On parle du projet")
+        deuxieme = Etape.objects.create(titre="Plans", texte="Je dessine les plans")
+        MethodePageEtape.objects.create(page=self.page, etape=premiere, sort_order=0)
+        MethodePageEtape.objects.create(page=self.page, etape=deuxieme, sort_order=1)
+
+    def test_page_is_renderable(self):
+        self.assertPageIsRenderable(self.page)
+
+    def test_template_used(self):
+        self.assertTemplateUsed(self.client.get(self.page.url), "pages/methode_page.html")
+
+    def test_contenu_affiche(self):
+        response = self.client.get(self.page.url)
+        for texte in [
+            "Ma méthode",
+            "Étape 1",
+            "Rencontre",
+            "On parle du projet",
+            "Étape 2",
+            "Plans",
+            "Je dessine les plans",
+            "Les mairies et délais d&#x27;attente",
+            "Comptez deux mois d'instruction.",
+        ]:
+            self.assertContains(response, texte)
+
+    def test_sans_etape(self):
+        MethodePageEtape.objects.all().delete()
+        self.assertContains(self.client.get(self.page.url), "Aucune étape pour le moment.")

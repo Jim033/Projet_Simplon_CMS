@@ -1,0 +1,38 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-methode{% endblock %}
+
+{% block content %}
+<section class="methode" aria-labelledby="titre-page">
+    <h1 id="titre-page">{{ page.title }}</h1>
+
+    {% with lignes=page.etapes.all %}
+        {% if lignes %}
+            <ol class="methode-etapes">
+                {% for ligne in lignes %}
+                    {% with etape=ligne.etape %}
+                        <li class="etape">
+                            {% if etape.image %}
+                                {% image etape.image fill-480x320 format-webp loading="lazy" %}
+                            {% endif %}
+                            <p class="etape-numero">Étape {{ forloop.counter }}</p>
+                            <h2>{{ etape.titre }}</h2>
+                            {% if etape.texte %}<p>{{ etape.texte|linebreaksbr }}</p>{% endif %}
+                        </li>
+                    {% endwith %}
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>Aucune étape pour le moment.</p>
+        {% endif %}
+    {% endwith %}
+
+    {% if page.complement_titre or page.complement_texte %}
+        <div class="methode-complement">
+            {% if page.complement_titre %}<h2>{{ page.complement_titre }}</h2>{% endif %}
+            {% if page.complement_texte %}{{ page.complement_texte|richtext }}{% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock content %}

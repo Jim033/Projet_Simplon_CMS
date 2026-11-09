@@ -174,3 +174,76 @@ class TarifsPageTarif(Orderable):
     panels = [
         FieldPanel("tarif"),
     ]
+
+
+@register_snippet
+class Etape(models.Model):
+    """Une étape de la méthode de travail (snippet), affichée sur la page « Méthode »."""
+
+    titre = models.CharField("Titre", max_length=100)
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Pensez à remplir la description de l'image : "
+        "elle est lue par les lecteurs d'écran.",
+    )
+    texte = models.TextField("Explications", blank=True)
+
+    panels = [
+        FieldPanel("titre"),
+        FieldPanel("image"),
+        FieldPanel("texte"),
+    ]
+
+    class Meta:
+        verbose_name = "Étape de la méthode"
+        verbose_name_plural = "Étapes de la méthode"
+
+    def __str__(self):
+        return self.titre
+
+
+class MethodePage(Page):
+    """Page « Ma méthode » : les étapes choisies, puis un texte complémentaire."""
+
+    complement_titre = models.CharField(
+        "Titre du texte complémentaire",
+        max_length=150,
+        blank=True,
+        help_text="Ex. : « Les mairies et délais d'attente ».",
+    )
+    complement_texte = RichTextField(
+        "Texte complémentaire",
+        blank=True,
+        features=["bold", "italic", "ul", "link"],
+    )
+
+    content_panels = Page.content_panels + [
+        InlinePanel(
+            "etapes",
+            label="Étape",
+            max_num=3,
+            help_text="Les étapes sont numérotées dans l'ordre choisi ici.",
+        ),
+        FieldPanel("complement_titre"),
+        FieldPanel("complement_texte"),
+    ]
+
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Page de la méthode"
+
+
+class MethodePageEtape(Orderable):
+    """Lien entre la page « Méthode » et un snippet Étape (permet de choisir l'ordre)."""
+
+    page = ParentalKey(MethodePage, on_delete=models.CASCADE, related_name="etapes")
+    etape = models.ForeignKey(Etape, on_delete=models.CASCADE, related_name="+")
+
+    panels = [
+        FieldPanel("etape"),
+    ]
