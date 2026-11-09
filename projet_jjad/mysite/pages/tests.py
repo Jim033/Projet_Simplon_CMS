@@ -2,7 +2,12 @@ from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
 from home.models import HomePage
+from django.core import mail
+
 from pages.models import (
+    ContactChamp,
+    ContactHoraire,
+    ContactPage,
     Etape,
     MethodePage,
     MethodePageEtape,
@@ -109,3 +114,66 @@ class MethodePageTests(WagtailPageTestCase):
     def test_sans_etape(self):
         MethodePageEtape.objects.all().delete()
         self.assertContains(self.client.get(self.page.url), "Aucune étape pour le moment.")
+
+
+class ContactPageTests(WagtailPageTestCase):
+    """Tests de la page « Contact » : affichage, envoi du formulaire et remerciement."""
+
+    def setUp(self):
+        root_page = Page.get_first_root_node()
+        self.homepage = HomePage(title="Home")
+        root_page.add_child(instance=self.homepage)
+        Site.objects.all().delete()
+        Site.objects.create(hostname="localhost", root_page=self.homepage, is_default_site=True)
+
+        self.page = ContactPage(
+            title="Contact",
+            slug="contact",
+            telephone="06 12 34 56 78",
+            email_contact="contact@exemple.fr",
+            texte_remerciement="<p>Merci pour votre message !</p>",
+            to_address="jim@exemple.fr",
+            from_address="site@exemple.fr",
+            subject="Nouveau message",
+        )
+        self.homepage.add_child(instance=self.page)
+
+        ContactChamp.objects.create(page=self.page, label="Nom", field_type="singleline", required=True, sort_order=0)
+        ContactChamp.objects.create(page=self.page, label="Email", field_type="email", required=True, sort_order=1)
+        ContactChamp.objects.create(page=self.page, label="Message", field_type="multiline", required=True, sort_order=2)
+        ContactHoraire.objects.create(page=self.page, jour="Lundi", heures="9h/12h - 13h30/17h30", sort_order=0)
+
+    def test_page_is_renderable(self):
+        self.assertPageIsRenderable(self.page)
+
+    def test_contenu_affiche(self):
+        response = self.client.get(self.page.url)
+        self.assertTemplateUsed(response, "pages/contact_page.html")
+        for texte in [
+            "Nom",
+            "Email",
+            "Message",
+            'href="tel:0612345678"',
+            "06 12 34 56 78",
+            "mailto:contact@exemple.fr",
+            "Lundi",
+            "9h/12h - 13h30/17h30",
+            "conservées 3 ans maximum",
+        ]:
+            self.assertContains(response, texte)
+
+    def test_envoi_du_formulaire(self):
+        response = self.client.post(
+            self.page.url, {"nom": "Jean", "email": "jean@exemple.fr", "message": "Bonjour"}
+        )
+        self.assertTemplateUsed(response, "pages/contact_page_landing.html")
+        self.assertContains(response, "Merci pour votre message !")
+        self.assertEqual(self.page.get_submission_class().objects.filter(page=self.page).count(), 1)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["jim@exemple.fr"])
+
+    def test_formulaire_incomplet(self):
+        response = self.client.post(self.page.url, {"nom": "Jean"})
+        self.assertTemplateUsed(response, "pages/contact_page.html")
+        self.assertContains(response, "contact-erreur")
+        self.assertEqual(len(mail.outbox), 0)

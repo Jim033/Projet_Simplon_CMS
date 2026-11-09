@@ -1,0 +1,17 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-contact{% endblock %}
+
+{# Page affichée après l'envoi du formulaire de contact #}
+{% block content %}
+<section class="contact contact-merci" aria-labelledby="titre-page">
+    <h1 id="titre-page">{{ page.title }}</h1>
+    {% if page.texte_remerciement %}
+        <div class="contact-intro">{{ page.texte_remerciement|richtext }}</div>
+    {% else %}
+        <p class="contact-intro">Merci, votre message a bien été envoyé. Je vous réponds au plus vite.</p>
+    {% endif %}
+    <a class="bouton" href="/">Retour à l'accueil</a>
+</section>
+{% endblock content %}

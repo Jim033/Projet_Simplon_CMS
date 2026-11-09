@@ -360,3 +360,184 @@
         border-left: 1px solid var(--trait);
     }
 }
+
+/* ---------- Contact ---------- */
+.contact {
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+.contact h1,
+.contact-intro {
+    text-align: center;
+}
+
+.contact h1::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin: 0.75rem auto 0;
+    background: var(--rouge);
+}
+
+.contact-intro {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+/* Mobile : formulaire au-dessus, coordonnées dessous */
+.contact-colonnes {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+.contact-formulaire {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem 1.25rem;
+    background: var(--beton);
+    border-top: 3px solid var(--vert);
+}
+
+.contact-champ {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.contact-champ label {
+    font-family: var(--police-titre);
+    font-weight: 500;
+}
+
+.contact-champ input,
+.contact-champ textarea,
+.contact-champ select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--gris);
+    border-radius: 0;
+    background: var(--blanc);
+    color: var(--encre);
+    font: inherit;
+}
+
+.contact-champ textarea {
+    min-height: 9rem;
+    resize: vertical;
+}
+
+.contact-champ input:focus-visible,
+.contact-champ textarea:focus-visible,
+.contact-champ select:focus-visible {
+    outline: 3px solid var(--vert);
+    outline-offset: 1px;
+}
+
+.contact-aide {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--gris);
+}
+
+.contact-erreur {
+    margin: 0;
+    color: var(--rouge);
+    font-weight: 500;
+}
+
+.contact-erreur ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.contact-formulaire .bouton {
+    border: 0;
+    cursor: pointer;
+}
+
+.contact-mention {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--gris);
+}
+
+.contact-infos {
+    display: grid;
+    gap: 1.75rem;
+    align-content: start;
+}
+
+.contact-info {
+    display: flex;
+    gap: 1rem;
+}
+
+.contact-info svg {
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.6rem;
+    background: var(--vert);
+    fill: var(--blanc);
+}
+
+.contact-info h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.25rem;
+}
+
+.contact-info a {
+    color: var(--vert);
+    text-underline-offset: 0.15em;
+    overflow-wrap: anywhere;
+}
+
+.contact-info a:hover {
+    color: var(--rouge);
+}
+
+.contact-horaires {
+    margin: 0;
+}
+
+.contact-horaires div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+}
+
+.contact-horaires dt {
+    min-width: 6rem;
+    font-weight: 600;
+}
+
+.contact-horaires dd {
+    margin: 0;
+}
+
+/* Page de remerciement après l'envoi */
+.contact-merci {
+    text-align: center;
+}
+
+.contact-merci .bouton {
+    margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+
+    /* Formulaire à gauche, coordonnées à droite (comme la maquette) */
+    .contact-colonnes {
+        grid-template-columns: 3fr 2fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .contact-formulaire {
+        padding: 2rem;
+    }
+}

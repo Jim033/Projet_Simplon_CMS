@@ -3,7 +3,14 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.fields import RichTextField
 from wagtail.models import Page, Orderable
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import (
+    FieldPanel,
+    FieldRowPanel,
+    InlinePanel,
+    MultiFieldPanel,
+)
+from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
+from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.snippets.models import register_snippet
 
 
@@ -246,4 +253,99 @@ class MethodePageEtape(Orderable):
 
     panels = [
         FieldPanel("etape"),
+    ]
+
+
+class ContactChamp(AbstractFormField):
+    """Un champ du formulaire de contact (Nom, Email, Téléphone, Message...)."""
+
+    page = ParentalKey(
+        "ContactPage", on_delete=models.CASCADE, related_name="form_fields"
+    )
+
+
+class ContactPage(AbstractEmailForm):
+    """Page « Contact » : formulaire à gauche, coordonnées et horaires à droite.
+
+    Les messages envoyés sont transmis par courriel et restent consultables
+    dans l'admin (Formulaires).
+    """
+
+    introduction = RichTextField(
+        "Introduction",
+        blank=True,
+        features=["bold", "italic", "link"],
+        help_text="Texte facultatif affiché sous le titre.",
+    )
+    texte_bouton = models.CharField(
+        "Texte du bouton d'envoi", max_length=50, default="Envoyer"
+    )
+    mention_donnees = models.TextField(
+        "Mention sur les données personnelles",
+        default="Les informations saisies servent uniquement à répondre à votre "
+        "demande. Elles sont transmises par courriel à JARDIM JIM ARCHITECTURAL "
+        "DESIGN et conservées 3 ans maximum. Vous pouvez demander leur "
+        "suppression à tout moment.",
+        help_text="Affichée sous le formulaire, obligatoire au titre du RGPD.",
+    )
+    telephone = models.CharField("Numéro de téléphone", max_length=30, blank=True)
+    email_contact = models.EmailField("Adresse e-mail affichée", blank=True)
+    texte_remerciement = RichTextField(
+        "Texte de remerciement",
+        blank=True,
+        features=["bold", "italic", "link"],
+        help_text="Affiché après l'envoi du formulaire.",
+    )
+
+    content_panels = AbstractEmailForm.content_panels + [
+        FormSubmissionsPanel(),
+        FieldPanel("introduction"),
+        MultiFieldPanel(
+            [
+                InlinePanel("form_fields", label="Champ"),
+                FieldPanel("texte_bouton"),
+                FieldPanel("mention_donnees"),
+            ],
+            heading="Formulaire",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("telephone"),
+                FieldPanel("email_contact"),
+                InlinePanel("horaires", label="Horaire"),
+            ],
+            heading="Coordonnées et horaires",
+        ),
+        FieldPanel("texte_remerciement"),
+        MultiFieldPanel(
+            [
+                FieldRowPanel(
+                    [
+                        FieldPanel("from_address", classname="col6"),
+                        FieldPanel("to_address", classname="col6"),
+                    ]
+                ),
+                FieldPanel("subject"),
+            ],
+            heading="Envoi des messages par courriel",
+        ),
+    ]
+
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Page de contact"
+
+
+class ContactHoraire(Orderable):
+    """Une ligne d'horaires (ex. : Lundi — 9h/12h - 13h30/17h30)."""
+
+    page = ParentalKey(ContactPage, on_delete=models.CASCADE, related_name="horaires")
+    jour = models.CharField("Jour", max_length=30)
+    heures = models.CharField(
+        "Heures", max_length=60, help_text="Ex. : « 9h/12h - 13h30/17h30 » ou « Fermé »."
+    )
+
+    panels = [
+        FieldRowPanel([FieldPanel("jour"), FieldPanel("heures")]),
     ]
