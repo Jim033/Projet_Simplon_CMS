@@ -166,8 +166,9 @@ header nav a::after {
     transition: transform 0.2s ease;
 }
 
-header nav a:hover::after,
-header nav a:focus-visible::after {
+header nav a[href]:hover::after,
+header nav a:focus-visible::after,
+header nav a[aria-current="page"]::after {
     transform: scaleX(1);
 }
 
@@ -295,6 +296,14 @@ main p {
     max-width: 40rem;
 }
 
+/* Accueil : lettres un peu plus espacées sur tout le contenu */
+.template-homepage main,
+.template-homepage main h1,
+.template-homepage main h2,
+.template-homepage main h3 {
+    letter-spacing: 0.05em;
+}
+
 .accroche p {
     margin: 0;
     font-size: 1.1rem;
@@ -418,7 +427,7 @@ footer a {
     text-decoration: none;
 }
 
-footer a:hover {
+footer a[href]:hover {
     color: var(--sable);
     text-decoration: underline;
     text-underline-offset: 0.2em;
@@ -426,6 +435,11 @@ footer a:hover {
 
 footer a:focus-visible {
     outline-color: var(--sable);
+}
+
+/* Lien vers la page où l'on est déjà : affiché mais pas cliquable */
+footer a[aria-current="page"] {
+    color: var(--sable);
 }
 
 /* ---------- Animations désactivées si l'utilisateur le demande ---------- */
@@ -603,6 +617,7 @@ footer a:focus-visible {
     .footer-reseaux {
         grid-column: 2;
         grid-row: 2;
+        margin-top: 1rem;
         text-align: center;
     }
 

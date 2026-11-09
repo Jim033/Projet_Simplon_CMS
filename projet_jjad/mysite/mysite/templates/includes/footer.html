@@ -6,7 +6,7 @@
     {% if liens %}
         <nav class="footer-nav" aria-label="Navigation du pied de page">
             {% for lien in liens %}
-                <a href="{% pageurl lien.page %}">{{ lien.titre }}</a>
+                <a {% if lien.page_id == page_courante_id %}aria-current="page"{% else %}href="{% pageurl lien.page %}"{% endif %}>{{ lien.titre }}</a>
             {% endfor %}
         </nav>
     {% endif %}
@@ -30,7 +30,7 @@
 
     {% if footer.page_mentions_legales.live %}
         <div class="footer-mentions">
-            <a href="{% pageurl footer.page_mentions_legales %}">{{ footer.texte_mentions_legales }}</a>
+            <a {% if footer.page_mentions_legales_id == page_courante_id %}aria-current="page"{% else %}href="{% pageurl footer.page_mentions_legales %}"{% endif %}>{{ footer.texte_mentions_legales }}</a>
         </div>
     {% endif %}
 </footer>

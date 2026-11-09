@@ -17,7 +17,7 @@
 
         <nav id="menu-principal" aria-label="Navigation principale">
             {% for lien in liens %}
-                <a href="{% pageurl lien.page %}">{{ lien.titre }}</a>
+                <a {% if lien.page_id == page_courante_id %}aria-current="page"{% else %}href="{% pageurl lien.page %}"{% endif %}>{{ lien.titre }}</a>
             {% endfor %}
         </nav>
     {% endif %}
