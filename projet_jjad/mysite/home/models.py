@@ -21,13 +21,11 @@ class Header(ClusterableModel):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
     panels = [
         FieldPanel("nom"),
         FieldPanel("logo"),
         InlinePanel("liens", label="Lien de navigation"),
     ]
-
     def __str__(self):
         return self.nom
 
@@ -42,7 +40,6 @@ class HeaderLien(Orderable):
         on_delete=models.CASCADE,
         related_name="+",
     )
-
     panels = [
         FieldPanel("titre"),
         FieldPanel("page"),
@@ -66,7 +63,6 @@ class Footer(ClusterableModel):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
     panels = [
         FieldPanel("texte"),
         InlinePanel("liens", label="Lien de navigation"),
@@ -74,7 +70,6 @@ class Footer(ClusterableModel):
         FieldPanel("texte_mentions_legales"),
         FieldPanel("page_mentions_legales"),
     ]
-
     def __str__(self):
         return "Footer"
 
@@ -89,7 +84,6 @@ class FooterLien(Orderable):
         on_delete=models.CASCADE,
         related_name="+",
     )
-
     panels = [
         FieldPanel("titre"),
         FieldPanel("page"),
@@ -109,7 +103,6 @@ class FooterReseau(Orderable):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-
     panels = [
         FieldPanel("nom"),
         FieldPanel("url"),

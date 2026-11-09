@@ -1,8 +1,10 @@
 from django.db import models
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from wagtail.fields import RichTextField
 from wagtail.models import Page, Orderable
 from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.snippets.models import register_snippet
 
 
 # Modèles des pages du site (hors page d'accueil, qui reste dans l'app "home").
@@ -94,4 +96,81 @@ class RealisationImage(Orderable):
 
     panels = [
         FieldPanel("image"),
+    ]
+
+
+@register_snippet
+class Tarif(ClusterableModel):
+    """Un pack de prestations (snippet), réutilisable sur la page des tarifs."""
+
+    titre = models.CharField("Titre", max_length=100)
+    logo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Petit logo affiché en haut du pack.",
+    )
+    texte = models.TextField("Texte", blank=True)
+    prix = models.CharField(
+        "Tarif", max_length=100, help_text="Ex. : « À partir de 450 € »."
+    )
+
+    panels = [
+        FieldPanel("titre"),
+        FieldPanel("logo"),
+        InlinePanel("elements", label="Ce qui est compris dans le pack"),
+        FieldPanel("texte"),
+        FieldPanel("prix"),
+    ]
+
+    class Meta:
+        verbose_name = "Tarif"
+
+    def __str__(self):
+        return self.titre
+
+
+class TarifElement(Orderable):
+    """Une ligne de la liste « ce qui est compris » d'un pack."""
+
+    tarif = ParentalKey(Tarif, on_delete=models.CASCADE, related_name="elements")
+    texte = models.CharField("Élément compris", max_length=150)
+
+    panels = [
+        FieldPanel("texte"),
+    ]
+
+
+class TarifsPage(Page):
+    """Page « Tarifs » : titre, sous-titre, les packs choisis et une remarque."""
+
+    sous_titre = models.CharField("Sous-titre", max_length=255, blank=True)
+    remarque = models.TextField(
+        "Remarque",
+        blank=True,
+        help_text="Texte mis en avant sous les tarifs (ex. : tarifs indicatifs, devis sur mesure).",
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel("sous_titre"),
+        InlinePanel("tarifs", label="Tarif", max_num=3),
+        FieldPanel("remarque"),
+    ]
+
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Page des tarifs"
+
+
+class TarifsPageTarif(Orderable):
+    """Lien entre la page des tarifs et un snippet Tarif (permet de choisir l'ordre)."""
+
+    page = ParentalKey(TarifsPage, on_delete=models.CASCADE, related_name="tarifs")
+    tarif = models.ForeignKey(Tarif, on_delete=models.CASCADE, related_name="+")
+
+    panels = [
+        FieldPanel("tarif"),
     ]

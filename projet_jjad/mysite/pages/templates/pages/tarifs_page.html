@@ -1,0 +1,43 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailimages_tags %}
+
+{% block body_class %}template-tarifs{% endblock %}
+
+{% block content %}
+<section class="tarifs" aria-labelledby="titre-page">
+    <h1 id="titre-page">{{ page.title }}</h1>
+    {% if page.sous_titre %}<p class="tarifs-sous-titre">{{ page.sous_titre }}</p>{% endif %}
+
+    {% with lignes=page.tarifs.all %}
+        {% if lignes %}
+            <ul class="tarifs-liste">
+                {% for ligne in lignes %}
+                    {% with tarif=ligne.tarif %}
+                        <li class="tarif-carte">
+                            {% if tarif.logo %}
+                                {% image tarif.logo max-96x96 format-webp alt="" loading="lazy" %}
+                            {% endif %}
+                            <h2>{{ tarif.titre }}</h2>
+                            {% if tarif.elements.all %}
+                                <ul class="tarif-elements">
+                                    {% for element in tarif.elements.all %}
+                                        <li>{{ element.texte }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if tarif.texte %}<p>{{ tarif.texte|linebreaksbr }}</p>{% endif %}
+                            <p class="tarif-prix">{{ tarif.prix }}</p>
+                        </li>
+                    {% endwith %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun tarif pour le moment.</p>
+        {% endif %}
+    {% endwith %}
+
+    {% if page.remarque %}
+        <p class="tarifs-remarque">{{ page.remarque|linebreaksbr }}</p>
+    {% endif %}
+</section>
+{% endblock content %}

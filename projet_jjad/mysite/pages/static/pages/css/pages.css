@@ -158,3 +158,99 @@
         gap: 2.5rem;
     }
 }
+
+/* ---------- Tarifs ---------- */
+.tarifs {
+    max-width: 64rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tarifs h1::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin: 0.75rem auto 0;
+    background: var(--rouge);
+}
+
+.tarifs-sous-titre {
+    max-width: 40rem;
+    margin: 0 auto;
+    color: var(--gris);
+}
+
+.tarifs-liste {
+    display: grid;
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Mobile : les packs les uns sous les autres */
+.tarif-carte {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 22rem;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+    background: var(--beton);
+    border-top: 3px solid var(--vert);
+}
+
+.tarif-carte img {
+    width: auto;
+    max-height: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.tarif-carte h2 {
+    font-size: 1.3rem;
+    margin: 0 0 1rem;
+}
+
+.tarif-elements {
+    align-self: stretch;
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+    text-align: left;
+}
+
+.tarif-elements li + li {
+    margin-top: 0.35rem;
+}
+
+/* Le prix reste en bas de la carte, même si les textes n'ont pas la même longueur */
+.tarif-prix {
+    margin: auto 0 0;
+    padding-top: 0.5rem;
+    font-family: var(--police-titre);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--vert);
+}
+
+.tarifs-remarque {
+    max-width: 48rem;
+    margin: 0 auto;
+    color: var(--rouge);
+    font-weight: 500;
+}
+
+@media (min-width: 768px) {
+
+    /* Les 3 packs côte à côte */
+    .tarifs-liste {
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: 1.5rem;
+    }
+
+    .tarif-carte {
+        max-width: none;
+        height: 100%;
+    }
+}
