@@ -29,13 +29,13 @@
 }
 
 .liste-projets h1,
-.liste-projets-intro {
+.liste-projets > p {
     text-align: center;
 }
 
-.liste-projets-intro {
+.liste-projets > p {
     max-width: 40rem;
-    margin: 0 auto;
+    margin-inline: auto;
 }
 
 .liste-projets ul {
@@ -49,7 +49,6 @@
 /* Mobile : image au-dessus, texte dessous */
 .projet-carte {
     display: grid;
-    gap: 0.75rem;
     max-width: 22rem;
     margin: 0 auto;
 }
@@ -58,6 +57,7 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    margin-bottom: 0.75rem;
 }
 
 .projet-carte h2 {
@@ -119,6 +119,7 @@
 .projet-texte {
     max-width: 48rem;
     margin: 0 auto;
+    padding: 0;
 }
 
 .projet-texte a {
@@ -139,18 +140,35 @@
         gap: 3rem 2.5rem;
     }
 
+    /* Image d'un côté, texte de l'autre, centré verticalement grâce aux lignes 1fr */
     .projet-carte {
         grid-template-columns: 1fr 1fr;
-        align-items: center;
-        gap: 1.25rem;
+        grid-template-rows: 1fr auto auto auto 1fr;
+        column-gap: 1.25rem;
         max-width: none;
         margin: 0;
     }
 
+    .projet-carte img {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        align-self: center;
+        margin-bottom: 0;
+    }
+
+    .projet-carte h2 { grid-column: 2; grid-row: 2; }
+    .projet-carte p { grid-column: 2; grid-row: 3; }
+    .projet-carte .bouton { grid-column: 2; grid-row: 4; }
+
     /* Une ligne sur deux : texte à gauche, image à droite (comme la maquette) */
     .projet-carte:nth-child(4n + 3) img,
     .projet-carte:nth-child(4n + 4) img {
-        order: 2;
+        grid-column: 2;
+    }
+
+    .projet-carte:nth-child(4n + 3) :is(h2, p, .bouton),
+    .projet-carte:nth-child(4n + 4) :is(h2, p, .bouton) {
+        grid-column: 1;
     }
 
     .projet-images {
@@ -241,6 +259,21 @@
     font-weight: 500;
 }
 
+/* Invitation à me contacter : séparée de la remarque par un trait */
+.tarifs-contact {
+    max-width: 48rem;
+    margin: 3rem auto 1.5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--trait);
+    /* Répartit les mots sur les lignes pour éviter un « ! » seul en fin de texte */
+    text-wrap: balance;
+}
+
+/* Sans texte au-dessus, le bouton garde un espace avec la remarque */
+.tarifs-remarque + .tarifs-contact-bouton {
+    margin-top: 2rem;
+}
+
 @media (min-width: 768px) {
 
     /* Les 3 packs côte à côte */
@@ -324,7 +357,7 @@
 .methode-complement {
     max-width: 48rem;
     margin: 0 auto;
-    padding-top: 2rem;
+    padding: 2rem 0 0;
     border-top: 1px solid var(--trait);
 }
 
@@ -368,7 +401,7 @@
 }
 
 .contact h1,
-.contact-intro {
+.contact > p {
     text-align: center;
 }
 
@@ -381,15 +414,13 @@
     background: var(--rouge);
 }
 
-.contact-intro {
+.contact > p {
     max-width: 40rem;
-    margin: 0 auto;
+    margin-inline: auto;
 }
 
 /* Mobile : formulaire au-dessus, coordonnées dessous */
-.contact-colonnes {
-    display: grid;
-    gap: 2.5rem;
+.contact-colonnes .contact-formulaire {
     margin-top: 2rem;
 }
 
@@ -404,6 +435,7 @@
 .contact-champ {
     display: grid;
     gap: 0.35rem;
+    margin: 0;
 }
 
 .contact-champ label {
@@ -437,7 +469,6 @@
 }
 
 .contact-aide {
-    margin: 0;
     font-size: 0.9rem;
     color: var(--gris);
 }
@@ -446,11 +477,6 @@
     margin: 0;
     color: var(--rouge);
     font-weight: 500;
-}
-
-.contact-erreur ul {
-    margin: 0;
-    padding-left: 1.25rem;
 }
 
 .contact-formulaire .bouton {
@@ -465,19 +491,30 @@
     color: var(--gris);
 }
 
+/* Sections imbriquées : sans la marge des sections principales */
 .contact-infos {
     display: grid;
     gap: 1.75rem;
     align-content: start;
+    margin-top: 2.5rem;
+    padding: 0;
 }
 
+/* Pictogramme à gauche, titre et contenu à droite */
 .contact-info {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 1rem;
+    padding: 0;
+}
+
+.contact-info > :not(svg) {
+    grid-column: 2;
 }
 
 .contact-info svg {
-    flex-shrink: 0;
+    grid-row: 1 / -1;
     width: 2.75rem;
     height: 2.75rem;
     padding: 0.6rem;
@@ -491,6 +528,7 @@
 }
 
 .contact-info a {
+    justify-self: start;
     color: var(--vert);
     text-underline-offset: 0.15em;
     overflow-wrap: anywhere;
@@ -501,13 +539,10 @@
 }
 
 .contact-horaires {
-    margin: 0;
-}
-
-.contact-horaires div {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr;
     gap: 0 0.5rem;
+    margin: 0;
 }
 
 .contact-horaires dt {
@@ -532,12 +567,84 @@
 
     /* Formulaire à gauche, coordonnées à droite (comme la maquette) */
     .contact-colonnes {
+        display: grid;
         grid-template-columns: 3fr 2fr;
-        gap: 3rem;
+        column-gap: 3rem;
         align-items: start;
+    }
+
+    .contact-colonnes > h1,
+    .contact-colonnes > p {
+        grid-column: 1 / -1;
+    }
+
+    .contact-colonnes .contact-infos {
+        margin-top: 2rem;
     }
 
     .contact-formulaire {
         padding: 2rem;
     }
+}
+
+/* ---------- Mentions légales ---------- */
+/* Titres centrés et texte en colonne étroite pour rester lisible (comme la maquette) */
+.mentions {
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.mentions h1 {
+    text-align: center;
+}
+
+/* Lettres un peu plus espacées sur tout le contenu (comme la page Méthode) */
+.template-mentions main,
+.template-mentions main h1,
+.template-mentions main h2 {
+    letter-spacing: 0.05em;
+}
+
+.mentions h1::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin: 0.75rem auto 0;
+    background: var(--rouge);
+}
+
+.mentions-rubrique {
+    margin-top: 2.5rem;
+    padding: 0;
+    text-align: center;
+}
+
+.mentions-rubrique h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+/* Puces collées au texte pour que les listes restent centrées */
+.mentions-rubrique ul {
+    padding-left: 0;
+    list-style-position: inside;
+}
+
+.mentions-rubrique a {
+    color: var(--vert);
+    overflow-wrap: anywhere;
+    text-underline-offset: 0.15em;
+}
+
+.mentions-rubrique a:hover {
+    color: var(--rouge);
+}
+
+.mentions-maj {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--trait);
+    font-size: 0.9rem;
+    text-align: center;
 }

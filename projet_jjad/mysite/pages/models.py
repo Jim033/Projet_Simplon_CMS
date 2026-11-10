@@ -1,12 +1,16 @@
 from django.db import models
 from modelcluster.fields import ParentalKey
+# le parent qui peut contenir des enfants en brouillon, Au moment où Mr JARDIM clique sur « Enregistrer », il sauvegarde tout le paquet d’un coup.
 from modelcluster.models import ClusterableModel
 from wagtail.fields import RichTextField
+# Orderable : l’enfant qui a un numéro d’ordre, Il ajoute automatiquement un champ caché sort_order (0, 1, 2, 3…) à chaque enfant. Si Mr JARDIM veut mettre « Contact » avant « Tarifs », il fait glisser le lien dans l’admin. Il n’a besoin d’aucun code.
 from wagtail.models import Page, Orderable
 from wagtail.admin.panels import (
     FieldPanel,
-    FieldRowPanel,
+    # plusieurs champs sur une même ligne.
+    FieldRowPanel, 
     InlinePanel,
+    # plusieurs champs regroupés dans un bloc avec un titre, que l’on peut replier.
     MultiFieldPanel,
 )
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
@@ -159,14 +163,49 @@ class TarifsPage(Page):
         blank=True,
         help_text="Texte mis en avant sous les tarifs (ex. : tarifs indicatifs, devis sur mesure).",
     )
+    contact_texte = models.TextField(
+        "Texte",
+        blank=True,
+        help_text="Affiché sous la remarque (ex. : « Un projet particulier ? "
+        "Parlons-en, je vous établis un devis gratuit. »).",
+    )
+    contact_lien_texte = models.CharField(
+        "Texte du bouton", max_length=50, default="Me contacter"
+    )
+    contact_lien_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Page du bouton",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Laisser vide pour pointer automatiquement vers la page de contact.",
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel("sous_titre"),
         InlinePanel("tarifs", label="Tarif", max_num=3),
         FieldPanel("remarque"),
+        MultiFieldPanel(
+            [
+                FieldPanel("contact_texte"),
+                FieldPanel("contact_lien_texte"),
+                FieldPanel("contact_lien_page"),
+            ],
+            heading="Invitation à me contacter",
+        ),
     ]
 
     subpage_types = []
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        # Page choisie dans l'admin, sinon la page de contact publiée
+        lien = self.contact_lien_page
+        if not (lien and lien.live):
+            lien = ContactPage.objects.live().first()
+        context["lien_contact"] = lien
+        return context
 
     class Meta:
         verbose_name = "Page des tarifs"
@@ -348,4 +387,42 @@ class ContactHoraire(Orderable):
 
     panels = [
         FieldRowPanel([FieldPanel("jour"), FieldPanel("heures")]),
+    ]
+
+
+class MentionsLegalesPage(Page):
+    """Page « Mentions légales » : une suite de rubriques (titre + texte)."""
+
+    content_panels = Page.content_panels + [
+        InlinePanel(
+            "rubriques",
+            label="Rubrique",
+            help_text="Ex. : Éditeur du site, Hébergement, Propriété intellectuelle, "
+            "Données personnelles, Cookies.",
+        ),
+    ]
+
+    # Une seule page de mentions légales, sans sous-page
+    max_count = 1
+    subpage_types = []
+
+    class Meta:
+        verbose_name = "Page des mentions légales"
+
+
+class MentionsLegalesRubrique(Orderable):
+    """Une rubrique des mentions légales (ex. : « Éditeur du site » et son texte)."""
+
+    page = ParentalKey(
+        MentionsLegalesPage, on_delete=models.CASCADE, related_name="rubriques"
+    )
+    titre = models.CharField("Titre", max_length=100)
+    texte = RichTextField(
+        "Texte",
+        features=["bold", "italic", "ul", "link"],
+    )
+
+    panels = [
+        FieldPanel("titre"),
+        FieldPanel("texte"),
     ]

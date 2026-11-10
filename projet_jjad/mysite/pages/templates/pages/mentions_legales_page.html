@@ -1,0 +1,25 @@
+{% extends "pages/base_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-mentions{% endblock %}
+
+{% block content %}
+<section class="mentions" aria-labelledby="titre-page">
+    <h1 id="titre-page">{{ page.title }}</h1>
+    {% with rubriques=page.rubriques.all %}
+        {% if rubriques %}
+            {% for rubrique in rubriques %}
+                <section class="mentions-rubrique">
+                    <h2>{{ rubrique.titre }}</h2>
+                    {{ rubrique.texte|richtext }}
+                </section>
+            {% endfor %}
+        {% else %}
+            <p>Les mentions légales seront bientôt disponibles.</p>
+        {% endif %}
+    {% endwith %}
+    {% if page.last_published_at %}
+        <p class="mentions-maj">Dernière mise à jour : <time datetime="{{ page.last_published_at|date:'Y-m-d' }}">{{ page.last_published_at|date:"d/m/Y" }}</time></p>
+    {% endif %}
+</section>
+{% endblock content %}

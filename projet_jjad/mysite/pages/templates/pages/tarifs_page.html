@@ -1,5 +1,5 @@
 {% extends "pages/base_page.html" %}
-{% load wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-tarifs{% endblock %}
 
@@ -7,7 +7,6 @@
 <section class="tarifs" aria-labelledby="titre-page">
     <h1 id="titre-page">{{ page.title }}</h1>
     {% if page.sous_titre %}<p class="tarifs-sous-titre">{{ page.sous_titre }}</p>{% endif %}
-
     {% with lignes=page.tarifs.all %}
         {% if lignes %}
             <ul class="tarifs-liste">
@@ -35,9 +34,15 @@
             <p>Aucun tarif pour le moment.</p>
         {% endif %}
     {% endwith %}
-
     {% if page.remarque %}
         <p class="tarifs-remarque">{{ page.remarque|linebreaksbr }}</p>
+    {% endif %}
+    {# Invitation à prendre contact : texte puis bouton vers la page de contact #}
+    {% if page.contact_texte %}
+        <p class="tarifs-contact">{{ page.contact_texte|linebreaksbr }}</p>
+    {% endif %}
+    {% if lien_contact %}
+        <a class="bouton tarifs-contact-bouton" href="{% pageurl lien_contact %}">{{ page.contact_lien_texte }}</a>
     {% endif %}
 </section>
 {% endblock content %}

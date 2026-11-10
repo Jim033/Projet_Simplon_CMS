@@ -14,24 +14,24 @@
     {% if reseaux %}
         <section class="footer-reseaux">
             <h2>Réseaux sociaux</h2>
-            <div>
+            <ul>
                 {% for reseau in reseaux %}
-                    <a href="{{ reseau.url }}">
+                    <li><a href="{{ reseau.url }}">
                         {% if reseau.logo %}
                             {% image reseau.logo width-40 alt=reseau.nom %}
                         {% else %}
                             {{ reseau.nom }}
                         {% endif %}
-                    </a>
+                    </a></li>
                 {% endfor %}
-            </div>
+            </ul>
         </section>
     {% endif %}
 
     {% if footer.page_mentions_legales.live %}
-        <div class="footer-mentions">
+        <p class="footer-mentions">
             <a {% if footer.page_mentions_legales_id == page_courante_id %}aria-current="page"{% else %}href="{% pageurl footer.page_mentions_legales %}"{% endif %}>{{ footer.texte_mentions_legales }}</a>
-        </div>
+        </p>
     {% endif %}
 </footer>
 {% endif %}

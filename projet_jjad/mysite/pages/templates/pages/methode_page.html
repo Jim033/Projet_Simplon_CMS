@@ -6,7 +6,6 @@
 {% block content %}
 <section class="methode" aria-labelledby="titre-page">
     <h1 id="titre-page">{{ page.title }}</h1>
-
     {% with lignes=page.etapes.all %}
         {% if lignes %}
             <ol class="methode-etapes">
@@ -27,12 +26,11 @@
             <p>Aucune étape pour le moment.</p>
         {% endif %}
     {% endwith %}
-
     {% if page.complement_titre or page.complement_texte %}
-        <div class="methode-complement">
+        <section class="methode-complement">
             {% if page.complement_titre %}<h2>{{ page.complement_titre }}</h2>{% endif %}
             {% if page.complement_texte %}{{ page.complement_texte|richtext }}{% endif %}
-        </div>
+        </section>
     {% endif %}
 </section>
 {% endblock content %}

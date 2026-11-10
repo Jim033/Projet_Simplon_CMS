@@ -10,6 +10,8 @@ from pages.models import (
     ContactPage,
     Etape,
     MethodePage,
+    MentionsLegalesPage,
+    MentionsLegalesRubrique,
     MethodePageEtape,
     Tarif,
     TarifElement,
@@ -65,6 +67,26 @@ class TarifsPageTests(WagtailPageTestCase):
     def test_sans_tarif(self):
         TarifsPageTarif.objects.all().delete()
         self.assertContains(self.client.get(self.page.url), "Aucun tarif pour le moment.")
+
+    def test_lien_contact_automatique(self):
+        contact = ContactPage(title="Contact", slug="contact")
+        self.homepage.add_child(instance=contact)
+        self.page.contact_texte = "Un projet particulier ? Parlons-en."
+        self.page.save()
+        response = self.client.get(self.page.url)
+        self.assertContains(response, "Un projet particulier ? Parlons-en.")
+        self.assertContains(response, f'href="{contact.url}">Me contacter</a>')
+
+    def test_lien_contact_choisi(self):
+        autre = TarifsPage(title="Autre page", slug="autre")
+        self.homepage.add_child(instance=autre)
+        self.page.contact_lien_page = autre
+        self.page.contact_lien_texte = "Écrivez-moi"
+        self.page.save()
+        self.assertContains(self.client.get(self.page.url), f'href="{autre.url}">Écrivez-moi</a>')
+
+    def test_sans_page_de_contact(self):
+        self.assertNotContains(self.client.get(self.page.url), "tarifs-contact-bouton")
 
 
 class MethodePageTests(WagtailPageTestCase):
@@ -177,3 +199,43 @@ class ContactPageTests(WagtailPageTestCase):
         self.assertTemplateUsed(response, "pages/contact_page.html")
         self.assertContains(response, "contact-erreur")
         self.assertEqual(len(mail.outbox), 0)
+
+
+class MentionsLegalesPageTests(WagtailPageTestCase):
+    """Tests de la page « Mentions légales »."""
+
+    def setUp(self):
+        root_page = Page.get_first_root_node()
+        self.homepage = HomePage(title="Home")
+        root_page.add_child(instance=self.homepage)
+        Site.objects.all().delete()
+        Site.objects.create(hostname="localhost", root_page=self.homepage, is_default_site=True)
+
+        self.page = MentionsLegalesPage(title="Mentions légales", slug="mentions-legales")
+        self.homepage.add_child(instance=self.page)
+        MentionsLegalesRubrique.objects.create(
+            page=self.page, titre="Éditeur du site", texte="<p>JARDIM JIM</p>", sort_order=0
+        )
+        MentionsLegalesRubrique.objects.create(
+            page=self.page, titre="Hébergement", texte="<p>Hébergeur du site</p>", sort_order=1
+        )
+
+    def test_page_is_renderable(self):
+        self.assertPageIsRenderable(self.page)
+
+    def test_contenu_affiche(self):
+        response = self.client.get(self.page.url)
+        self.assertTemplateUsed(response, "pages/mentions_legales_page.html")
+        for texte in ["Mentions légales", "Éditeur du site", "JARDIM JIM", "Hébergement", "Hébergeur du site"]:
+            self.assertContains(response, texte)
+        contenu = response.content.decode()
+        self.assertLess(contenu.index("Éditeur du site"), contenu.index("Hébergement"))
+
+    def test_sans_rubrique(self):
+        MentionsLegalesRubrique.objects.all().delete()
+        self.assertContains(
+            self.client.get(self.page.url), "Les mentions légales seront bientôt disponibles."
+        )
+
+    def test_une_seule_page(self):
+        self.assertFalse(MentionsLegalesPage.can_create_at(self.homepage))

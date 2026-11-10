@@ -10,7 +10,6 @@
     </a>
     <h1>{{ page.title }}</h1>
     {% if page.infos %}<p class="projet-infos">{{ page.infos }}</p>{% endif %}
-
     {% if page.images.all %}
         <ul class="projet-images">
             {% for item in page.images.all %}
@@ -20,9 +19,8 @@
             {% endfor %}
         </ul>
     {% endif %}
-
     {% if page.texte %}
-        <div class="projet-texte">{{ page.texte|richtext }}</div>
+        <section class="projet-texte" aria-label="Description du projet">{{ page.texte|richtext }}</section>
     {% endif %}
 </article>
 {% endblock content %}

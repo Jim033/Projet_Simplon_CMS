@@ -14,7 +14,7 @@
 
 <section class="metier{% if not page.metier_image %} metier-sans-image{% endif %}" aria-labelledby="titre-metier">
     <h2 id="titre-metier">{{ page.metier_titre }}</h2>
-    <div class="metier-texte">{{ page.metier_texte|richtext }}</div>
+    {{ page.metier_texte|richtext }}
     {% if page.metier_image %}
         {% srcset_image page.metier_image width-{400,800} format-webp sizes="(min-width: 768px) 40vw, 45vw" loading="lazy" %}
     {% endif %}
