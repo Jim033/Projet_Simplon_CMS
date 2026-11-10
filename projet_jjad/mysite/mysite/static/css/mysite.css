@@ -438,6 +438,14 @@ footer h2 {
     gap: 0 1rem;
 }
 
+/* Mobile : les 5 liens tiennent sur une ligne, répartis sur toute la largeur.
+   Le texte rétrécit un peu sur les petits écrans (sans descendre sous 0.8rem). */
+.footer-nav {
+    justify-content: space-between;
+    gap: 0 0.4rem;
+    font-size: clamp(0.8rem, 3.6vw, 0.95rem);
+}
+
 .footer-reseaux ul {
     margin: 0;
     padding: 0;
@@ -651,6 +659,8 @@ footer a[aria-current="page"] {
         grid-column: 2;
         grid-row: 1;
         justify-content: center;
+        gap: 0 1rem;
+        font-size: inherit;
     }
 
     .footer-reseaux {
