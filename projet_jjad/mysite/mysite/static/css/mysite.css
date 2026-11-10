@@ -403,6 +403,24 @@ footer p {
     text-transform: uppercase;
 }
 
+/* Copyright : texte discret, en dernier sur mobile, séparé par un trait */
+.footer-copyright {
+    order: 1;
+    padding-top: 1rem;
+    border-top: 1px solid rgb(255 255 255 / 0.25);
+}
+
+footer .footer-copyright {
+    font-family: var(--police-texte);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+}
+
+.footer-copyright small {
+    font-size: 0.85rem;
+}
+
 footer h2 {
     margin: 0;
     font-family: var(--police-titre);
@@ -644,6 +662,16 @@ footer a[aria-current="page"] {
 
     .footer-reseaux ul {
         justify-content: center;
+    }
+
+    /* Copyright sous les réseaux sociaux, au centre */
+    .footer-copyright {
+        grid-column: 2;
+        grid-row: 3;
+        margin-top: 0.5rem;
+        padding-top: 0;
+        border-top: 0;
+        text-align: center;
     }
 
     .footer-mentions {

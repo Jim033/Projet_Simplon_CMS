@@ -28,6 +28,11 @@
         </section>
     {% endif %}
 
+    {% if footer.copyright %}
+        {# L'année se met à jour toute seule chaque 1er janvier #}
+        <p class="footer-copyright"><small>&copy; {% now "Y" %} {{ footer.copyright }}</small></p>
+    {% endif %}
+
     {% if footer.page_mentions_legales.live %}
         <p class="footer-mentions">
             <a {% if footer.page_mentions_legales_id == page_courante_id %}aria-current="page"{% else %}href="{% pageurl footer.page_mentions_legales %}"{% endif %}>{{ footer.texte_mentions_legales }}</a>

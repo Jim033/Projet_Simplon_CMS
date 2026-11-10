@@ -63,10 +63,18 @@ class Footer(ClusterableModel):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    copyright = models.CharField(
+        "Texte du copyright",
+        max_length=150,
+        blank=True,
+        default="JARDIM JIM ARCHITECTURAL DESIGN. Tous droits réservés.",
+        help_text="Le symbole © et l'année en cours sont ajoutés automatiquement devant.",
+    )
     panels = [
         FieldPanel("texte"),
         InlinePanel("liens", label="Lien de navigation"),
         InlinePanel("reseaux", label="Réseau social"),
+        FieldPanel("copyright"),
         FieldPanel("texte_mentions_legales"),
         FieldPanel("page_mentions_legales"),
     ]

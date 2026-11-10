@@ -88,6 +88,19 @@ class HeaderFooterTests(WagtailPageTestCase):
         self.assertHeaderFooter(self.client.get("/search/"))
         self.assertHeaderFooter(self.client.get("/page-inexistante/"), status_code=404)
 
+    def test_copyright(self):
+        from datetime import date
+
+        self.assertContains(
+            self.client.get(self.homepage.url),
+            f"&copy; {date.today().year} JARDIM JIM ARCHITECTURAL DESIGN. Tous droits réservés.",
+        )
+
+    def test_sans_copyright(self):
+        self.footer.copyright = ""
+        self.footer.save()
+        self.assertNotContains(self.client.get(self.homepage.url), "footer-copyright")
+
     def test_stylesheet_loaded(self):
         self.assertContains(self.client.get(self.homepage.url), "css/mysite.css")
 
