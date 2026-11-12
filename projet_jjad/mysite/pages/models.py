@@ -92,6 +92,11 @@ class RealisationPage(Page):
         premiere = self.images.first()
         return premiere.image if premiere else None
 
+    @property
+    def vignette_alt(self):
+        premiere = self.images.first()
+        return premiere.image_alt if premiere else ""
+
 
 class RealisationImage(Orderable):
     page = ParentalKey(
@@ -101,12 +106,18 @@ class RealisationImage(Orderable):
         "wagtailimages.Image",
         on_delete=models.CASCADE,
         related_name="+",
-        help_text="Pensez à remplir la description de l'image : "
-        "elle est lue par les lecteurs d'écran.",
+    )
+    image_alt = models.CharField(
+        "Texte alternatif de l'image",
+        max_length=255,
+        blank=True,
+        help_text="Décrit ce que montre l'image, pour les lecteurs d'écran. "
+        "Laisser vide pour utiliser la description de l'image (médiathèque).",
     )
 
     panels = [
         FieldPanel("image"),
+        FieldPanel("image_alt"),
     ]
 
 
@@ -233,14 +244,20 @@ class Etape(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
-        help_text="Pensez à remplir la description de l'image : "
-        "elle est lue par les lecteurs d'écran.",
+    )
+    image_alt = models.CharField(
+        "Texte alternatif de l'image",
+        max_length=255,
+        blank=True,
+        help_text="Décrit ce que montre l'image, pour les lecteurs d'écran. "
+        "Laisser vide pour utiliser la description de l'image (médiathèque).",
     )
     texte = models.TextField("Explications", blank=True)
 
     panels = [
         FieldPanel("titre"),
         FieldPanel("image"),
+        FieldPanel("image_alt"),
         FieldPanel("texte"),
     ]
 

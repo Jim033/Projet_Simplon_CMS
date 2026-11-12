@@ -16,7 +16,7 @@
                 <li class="projet-carte">
                     {% with vignette=projet.vignette %}
                         {% if vignette %}
-                            {% image vignette fill-600x600 format-webp loading="lazy" %}
+                            {% image vignette fill-600x600 format-webp loading="lazy" alt=projet.vignette_alt|default:vignette.description %}
                         {% endif %}
                     {% endwith %}
                     <h2>{{ projet.title }}</h2>

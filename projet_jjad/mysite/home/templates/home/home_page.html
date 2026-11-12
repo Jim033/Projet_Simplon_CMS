@@ -16,7 +16,7 @@
     <h2 id="titre-metier">{{ page.metier_titre }}</h2>
     {{ page.metier_texte|richtext }}
     {% if page.metier_image %}
-        {% srcset_image page.metier_image width-{400,800} format-webp sizes="(min-width: 768px) 40vw, 45vw" loading="lazy" %}
+        {% srcset_image page.metier_image width-{400,800} format-webp sizes="(min-width: 768px) 40vw, 45vw" loading="lazy" alt=page.metier_image_alt|default:page.metier_image.description %}
     {% endif %}
     {% if page.metier_lien_page.live %}
         <a class="bouton" href="{% pageurl page.metier_lien_page %}">{{ page.metier_lien_texte }}</a>
@@ -33,7 +33,7 @@
             {% for realisation in page.realisations.all %}
                 <li>
                     <figure>
-                        {% srcset_image realisation.image fill-{300x300,600x600} format-webp sizes="(min-width: 768px) 20vw, 30vw" loading="lazy" %}
+                        {% srcset_image realisation.image fill-{300x300,600x600} format-webp sizes="(min-width: 768px) 20vw, 30vw" loading="lazy" alt=realisation.image_alt|default:realisation.image.description %}
                         <figcaption>{{ realisation.description }}</figcaption>
                     </figure>
                 </li>

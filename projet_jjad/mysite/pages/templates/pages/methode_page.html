@@ -13,7 +13,7 @@
                     {% with etape=ligne.etape %}
                         <li class="etape">
                             {% if etape.image %}
-                                {% image etape.image fill-480x320 format-webp loading="lazy" %}
+                                {% image etape.image fill-480x320 format-webp loading="lazy" alt=etape.image_alt|default:etape.image.description %}
                             {% endif %}
                             <p class="etape-numero">Étape {{ forloop.counter }}</p>
                             <h2>{{ etape.titre }}</h2>

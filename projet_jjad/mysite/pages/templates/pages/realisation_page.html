@@ -14,7 +14,7 @@
         <ul class="projet-images">
             {% for item in page.images.all %}
                 <li>
-                    {% srcset_image item.image width-{600,1200} format-webp sizes="(min-width: 768px) 45vw, 100vw" loading="lazy" %}
+                    {% srcset_image item.image width-{600,1200} format-webp sizes="(min-width: 768px) 45vw, 100vw" loading="lazy" alt=item.image_alt|default:item.image.description %}
                 </li>
             {% endfor %}
         </ul>

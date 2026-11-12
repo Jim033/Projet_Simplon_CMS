@@ -152,8 +152,13 @@ class HomePage(Page):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
-        help_text="Pensez à remplir la description de l'image : "
-        "elle est lue par les lecteurs d'écran.",
+    )
+    metier_image_alt = models.CharField(
+        "Texte alternatif de l'image",
+        max_length=255,
+        blank=True,
+        help_text="Décrit ce que montre l'image, pour les lecteurs d'écran. "
+        "Laisser vide pour utiliser la description de l'image (médiathèque).",
     )
     metier_lien_texte = models.CharField(
         "Texte du bouton", max_length=50, default="En savoir plus"
@@ -198,6 +203,7 @@ class HomePage(Page):
                 FieldPanel("metier_titre"),
                 FieldPanel("metier_texte"),
                 FieldPanel("metier_image"),
+                FieldPanel("metier_image_alt"),
                 FieldPanel("metier_lien_texte"),
                 FieldPanel("metier_lien_page"),
             ],
@@ -234,10 +240,18 @@ class HomeRealisation(Orderable):
         on_delete=models.CASCADE,
         related_name="+",
     )
+    image_alt = models.CharField(
+        "Texte alternatif de l'image",
+        max_length=255,
+        blank=True,
+        help_text="Décrit ce que montre l'image, pour les lecteurs d'écran. "
+        "Laisser vide pour utiliser la description de l'image (médiathèque).",
+    )
     description = models.CharField(max_length=100)
 
     panels = [
         FieldPanel("image"),
+        FieldPanel("image_alt"),
         FieldPanel("description"),
     ]
 
