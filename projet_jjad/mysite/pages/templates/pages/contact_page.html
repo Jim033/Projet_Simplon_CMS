@@ -17,6 +17,7 @@
             <p class="contact-erreur" role="alert">{{ form.non_field_errors|join:" " }}</p>
         {% endif %}
         {% for field in form.visible_fields %}
+            {% if field.name != "consentement" %}
             <p class="contact-champ">
                 <label for="{{ field.id_for_label }}">
                     {{ field.label }}{% if field.field.required %} <span aria-hidden="true">*</span><span class="visuellement-cache"> (obligatoire)</span>{% endif %}
@@ -27,8 +28,20 @@
                 {% endif %}
                 {{ field }}
             </p>
+            {% endif %}
         {% endfor %}
         {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        {% if form.consentement %}
+            <p class="contact-consentement">
+                <input type="checkbox" id="{{ form.consentement.id_for_label }}" name="{{ form.consentement.html_name }}" required{% if form.consentement.value %} checked{% endif %}>
+                <label for="{{ form.consentement.id_for_label }}">
+                    {{ form.consentement.label }} <span aria-hidden="true">*</span><span class="visuellement-cache"> (obligatoire)</span>
+                </label>
+            </p>
+            {% if form.consentement.errors %}
+                <strong class="contact-erreur" role="alert">{{ form.consentement.errors|join:" " }}</strong>
+            {% endif %}
+        {% endif %}
         <button class="bouton" type="submit">{{ page.texte_bouton }}</button>
         <p class="contact-mention">{{ page.mention_donnees|linebreaksbr }}</p>
     </form>

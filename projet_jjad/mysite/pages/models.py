@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from modelcluster.fields import ParentalKey
 # le parent qui peut contenir des enfants en brouillon, Au moment où Mr JARDIM clique sur « Enregistrer », il sauvegarde tout le paquet d’un coup.
@@ -344,6 +345,14 @@ class ContactPage(AbstractEmailForm):
         "suppression à tout moment.",
         help_text="Affichée sous le formulaire, obligatoire au titre du RGPD.",
     )
+    consentement_texte = models.CharField(
+        "Texte de la case à cocher",
+        max_length=255,
+        blank=True,
+        default="J'accepte que mes informations soient utilisées pour répondre à ma demande.",
+        help_text="Affiché à côté de la case, avant le bouton d'envoi. "
+        "La case est obligatoire. Laisser vide pour ne pas afficher de case.",
+    )
     telephone = models.CharField("Numéro de téléphone", max_length=30, blank=True)
     email_contact = models.EmailField("Adresse e-mail affichée", blank=True)
     texte_remerciement = RichTextField(
@@ -359,6 +368,7 @@ class ContactPage(AbstractEmailForm):
         MultiFieldPanel(
             [
                 InlinePanel("form_fields", label="Champ"),
+                FieldPanel("consentement_texte"),
                 FieldPanel("texte_bouton"),
                 FieldPanel("mention_donnees"),
             ],
@@ -388,6 +398,24 @@ class ContactPage(AbstractEmailForm):
     ]
 
     subpage_types = []
+
+    def get_form_class(self):
+        """Ajoute la case à cocher obligatoire si un texte est renseigné."""
+        form_class = super().get_form_class()
+        if not self.consentement_texte:
+            return form_class
+
+        return type(
+            form_class.__name__,
+            (form_class,),
+            {
+                "consentement": forms.BooleanField(
+                    label=self.consentement_texte,
+                    required=True,
+                    error_messages={"required": "Merci de cocher cette case."},
+                )
+            },
+        )
 
     class Meta:
         verbose_name = "Page de contact"
