@@ -5,3 +5,4 @@ __pycache__/
 local.py
 /media/
 /static/
+db.sqlite3
